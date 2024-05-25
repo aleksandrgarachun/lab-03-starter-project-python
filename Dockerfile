@@ -1,14 +1,11 @@
-FROM python
+FROM python:3.11.2-alpine3.16 AS builder
 
-WORKDIR /app
+RUN apk update
 
-COPY . /app
+RUN apk --no-cache add musl-dev g++
 
-RUN python -m venv /app/.venv
-RUN pip install -r requirements/backend.in
+COPY requirements requirements
 
-COPY . .
+RUN python -m venv /.venv
 
-EXPOSE 8080
-
-CMD ["uvicorn", "spaceship.main:app" , "--host=0.0.0.0", "--port=8080"]
+ENV PATH="/.venv/bin:$PATH"
